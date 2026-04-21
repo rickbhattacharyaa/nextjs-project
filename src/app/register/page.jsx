@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link";
-
+import { register } from "@/lib/auth";
 export default function Register () {
     
     const [username, setUsername] = useState("")
@@ -10,9 +10,56 @@ export default function Register () {
     const [password, setPassword] = useState("")
     const [errors, setErrors] = useState({})
 
-    const handelRegister = () =>{
-        alert("Register Successfully")
-    }
+    const handelRegister = (e) => {
+            e.preventDefault();
+
+            let newErrors = {};
+
+            
+            if (!username.trim()) {
+                newErrors.name = "Username is required";
+            }
+
+            if (!email.trim()) {
+                newErrors.email = "Email is required";
+            }
+
+            if (!password.trim()) {
+                newErrors.password = "Password is required";
+            }
+
+           
+            if (Object.keys(newErrors).length > 0) {
+                setErrors(newErrors);
+                return;
+            }
+
+            
+            const result = register({
+                name: username,
+                email,
+                password,
+                role: "user", 
+            });
+
+            
+            if (!result.success) {
+                setErrors({ email: result.message });
+                return;
+            }
+
+            
+            setErrors({});
+            alert("Registered successfully!");
+
+            
+            setUsername("");
+            setEmail("");
+            setPassword("");
+
+            // Optional: redirect (later you can use router)
+            // router.push("/login");
+            };
     return(
         <div className="flex justify-center items-center h-screen bg-gray-400">
             <form 
